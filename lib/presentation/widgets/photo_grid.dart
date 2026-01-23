@@ -1,0 +1,129 @@
+import 'package:cached_network_image/cached_network_image.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
+import 'package:go_router/go_router.dart';
+import '../../domain/models/photo_model.dart';
+
+class PhotoGrid extends StatelessWidget {
+  final List<PhotoModel> photos;
+  final ScrollController? scrollController;
+  final bool isLoadingMore;
+
+  const PhotoGrid({
+    super.key,
+    required this.photos,
+    this.scrollController,
+    this.isLoadingMore = false,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return CustomScrollView(
+      controller: scrollController,
+      slivers: [
+        SliverPadding(
+          padding: const EdgeInsets.all(8),
+          sliver: SliverMasonryGrid.count(
+            crossAxisCount: 2,
+            mainAxisSpacing: 8,
+            crossAxisSpacing: 8,
+            childCount: photos.length,
+            itemBuilder: (context, index) {
+              final photo = photos[index];
+              return PhotoCard(photo: photo);
+            },
+          ),
+        ),
+        if (isLoadingMore)
+          const SliverToBoxAdapter(
+            child: Center(
+              child: Padding(
+                padding: EdgeInsets.all(16),
+                child: CircularProgressIndicator(),
+              ),
+            ),
+          ),
+      ],
+    );
+  }
+}
+
+class PhotoCard extends StatelessWidget {
+  final PhotoModel photo;
+
+  const PhotoCard({super.key, required this.photo});
+
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      onTap: () => context.push('/photo/${photo.id}', extra: photo),
+      child: ClipRRect(
+        borderRadius: BorderRadius.circular(16),
+        child: Stack(
+          children: [
+            Hero(
+              tag: 'photo_${photo.id}',
+              child: CachedNetworkImage(
+                imageUrl: photo.src.medium,
+                fit: BoxFit.cover,
+                placeholder: (context, url) => AspectRatio(
+                  aspectRatio: photo.width / photo.height,
+                  child: Container(color: Colors.grey[300]),
+                ),
+                errorWidget: (context, url, error) => AspectRatio(
+                  aspectRatio: photo.width / photo.height,
+                  child: Container(
+                    color: Colors.grey[300],
+                    child: const Icon(Icons.error),
+                  ),
+                ),
+              ),
+            ),
+            Positioned(
+              top: 8,
+              right: 8,
+              child: Container(
+                decoration: BoxDecoration(
+                  color: const Color(0xFFE60023),
+                  borderRadius: BorderRadius.circular(24),
+                ),
+                child: IconButton(
+                  icon: const Icon(Icons.favorite_border, color: Colors.white),
+                  onPressed: () {},
+                  iconSize: 20,
+                  padding: const EdgeInsets.all(8),
+                  constraints: const BoxConstraints(),
+                ),
+              ),
+            ),
+            Positioned(
+              bottom: 0,
+              left: 0,
+              right: 0,
+              child: Container(
+                decoration: BoxDecoration(
+                  gradient: LinearGradient(
+                    begin: Alignment.bottomCenter,
+                    end: Alignment.topCenter,
+                    colors: [Colors.black.withOpacity(0.7), Colors.transparent],
+                  ),
+                ),
+                padding: const EdgeInsets.all(12),
+                child: Text(
+                  photo.photographer,
+                  style: const TextStyle(
+                    color: Colors.white,
+                    fontSize: 12,
+                    fontWeight: FontWeight.w500,
+                  ),
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
