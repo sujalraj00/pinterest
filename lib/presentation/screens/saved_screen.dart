@@ -332,6 +332,7 @@ class SavedScreen extends ConsumerWidget {
                   labelColor: Colors.black,
                   unselectedLabelColor: Colors.grey,
                   indicatorColor: Colors.black,
+                  dividerColor: Colors.transparent,
                   indicatorWeight: 3,
                   labelStyle: TextStyle(
                     fontSize: 16,
@@ -346,13 +347,13 @@ class SavedScreen extends ConsumerWidget {
               ),
             ],
           ),
-          actions: [
-            IconButton(
-              icon: const Icon(Icons.add),
-              iconSize: 28,
-              onPressed: () {},
-            ),
-          ],
+          // actions: [
+          //   IconButton(
+          //     icon: const Icon(Icons.add),
+          //     iconSize: 28,
+          //     onPressed: () {},
+          //   ),
+          // ],
           bottom: PreferredSize(
             preferredSize: const Size.fromHeight(60),
             child: Padding(
@@ -363,10 +364,12 @@ class SavedScreen extends ConsumerWidget {
                   hintStyle: TextStyle(color: Colors.grey[600]),
                   prefixIcon: const Icon(Icons.search, color: Colors.grey),
                   filled: true,
-                  fillColor: Colors.grey[200],
+
+                  fillColor: Colors.white,
                   border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(30),
-                    borderSide: BorderSide.none,
+                    borderRadius: BorderRadius.circular(15),
+
+                    // borderSide: BorderSide.none,
                   ),
                   contentPadding: const EdgeInsets.symmetric(vertical: 0),
                 ),

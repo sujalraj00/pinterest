@@ -12,164 +12,224 @@ class PinOptionsOverlay extends StatelessWidget {
     final screenHeight = MediaQuery.of(context).size.height;
     final imageHeight = screenHeight * 0.35;
 
-    return Container(
-      height: screenHeight * 0.8,
-      decoration: const BoxDecoration(color: Colors.transparent),
-      child: Stack(
-        children: [
-          Positioned(
-            top: 0,
-            left: 0,
-            right: 0,
-            child: Center(
-              child: Container(
-                width: 200,
-                height: imageHeight,
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(16),
-                  boxShadow: [
-                    BoxShadow(
-                      color: Colors.black.withOpacity(0.3),
-                      blurRadius: 20,
-                      spreadRadius: 5,
-                    ),
-                  ],
+    return Stack(
+      children: [
+        // Bottom sheet overlay
+        Positioned(
+          top: 500,
+          left: 0,
+          right: 0,
+          bottom: 0,
+          child: Container(
+            decoration: const BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.only(
+                topLeft: Radius.circular(24),
+                topRight: Radius.circular(24),
+              ),
+            ),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                // Drag handle
+                IconButton(
+                  onPressed: () {
+                    Navigator.pop(context);
+                  },
+                  icon: Icon(Icons.cancel_outlined),
                 ),
-                child: ClipRRect(
-                  borderRadius: BorderRadius.circular(16),
-                  child: CachedNetworkImage(
-                    imageUrl: photo.src.medium,
-                    fit: BoxFit.cover,
-                    placeholder: (context, url) =>
-                        Container(color: Colors.grey[300]),
-                    errorWidget: (context, url, error) => Container(
-                      color: Colors.grey[300],
-                      child: const Icon(Icons.error),
+
+                // SizedBox(height: imageHeight / 2 + 20),
+                // Options list
+                Expanded(
+                  child: SingleChildScrollView(
+                    padding: const EdgeInsets.symmetric(horizontal: 16),
+                    child: Column(
+                      children: [
+                        SizedBox(height: 15),
+                        Text('This pin is inspired by your recent activity'),
+                        SizedBox(height: 15),
+                        // _OptionTile(
+                        //   icon: Icons.download_outlined,
+                        //   title: 'Download image',
+                        //   subtitle: 'Save to your device',
+                        //   onTap: () {
+                        //     Navigator.pop(context);
+                        //     ScaffoldMessenger.of(context).showSnackBar(
+                        //       const SnackBar(
+                        //         content: Text('Downloading...'),
+                        //         duration: Duration(seconds: 2),
+                        //       ),
+                        //     );
+                        //   },
+                        // ),
+                        // const Divider(height: 1),
+                        // _OptionTile(
+                        //   icon: Icons.bookmark_outline,
+                        //   title: 'Save to board',
+                        //   subtitle: 'Add to your collection',
+                        //   onTap: () {
+                        //     Navigator.pop(context);
+                        //     _showBoardSelector(context);
+                        //   },
+                        // ),
+                        // const Divider(height: 1),
+                        // _OptionTile(
+                        //   icon: Icons.share_outlined,
+                        //   title: 'Share',
+                        //   subtitle: 'Send to friends',
+                        //   onTap: () {
+                        //     Navigator.pop(context);
+                        //     _showShareSheet(context);
+                        //   },
+                        // ),
+                        // const Divider(height: 1),
+                        // _OptionTile(
+                        //   icon: Icons.link_outlined,
+                        //   title: 'Copy link',
+                        //   subtitle: 'Share via link',
+                        //   onTap: () {
+                        //     Navigator.pop(context);
+                        //     ScaffoldMessenger.of(context).showSnackBar(
+                        //       const SnackBar(
+                        //         content: Text('Link copied to clipboard'),
+                        //         duration: Duration(seconds: 2),
+                        //       ),
+                        //     );
+                        //   },
+                        // ),
+                        // const Divider(height: 1),
+                        // _OptionTile(
+                        //   icon: Icons.hide_source_outlined,
+                        //   title: 'Hide Pin',
+                        //   subtitle: 'See fewer Pins like this',
+                        //   onTap: () {
+                        //     Navigator.pop(context);
+                        //     ScaffoldMessenger.of(context).showSnackBar(
+                        //       const SnackBar(
+                        //         content: Text('Pin hidden'),
+                        //         duration: Duration(seconds: 2),
+                        //       ),
+                        //     );
+                        //   },
+                        // ),
+                        // const Divider(height: 1),
+                        // _OptionTile(
+                        //   icon: Icons.report_outlined,
+                        //   title: 'Report Pin',
+                        //   subtitle: 'Report inappropriate content',
+                        //   isDestructive: true,
+                        //   onTap: () {
+                        //     Navigator.pop(context);
+                        //     _showReportDialog(context);
+                        //   },
+                        // ),
+                        _bottomCardText(Icons.pin_drop_outlined, 'Save'),
+                        SizedBox(height: 12),
+                        _bottomCardText(Icons.share, 'Share'),
+                        SizedBox(height: 12),
+                        _bottomCardText(Icons.download, 'Download'),
+                        SizedBox(height: 12),
+                        _bottomCardText(
+                          Icons.heart_broken_outlined,
+                          'See more like this',
+                        ),
+                        SizedBox(height: 12),
+                        _bottomCardText(
+                          Icons.remove_red_eye_outlined,
+                          'See less like this',
+                        ),
+                        SizedBox(height: 12),
+                        _bottomCardText(
+                          Icons.block,
+                          'Report',
+                          'This goes against Pinterest\'s community guidelines',
+                        ),
+                        // const SizedBox(height: 24),
+                      ],
                     ),
                   ),
                 ),
-              ),
+              ],
             ),
           ),
-          // Bottom sheet overlay
-          Positioned(
-            top: imageHeight * 2 / 3,
-            left: 0,
-            right: 0,
-            bottom: 0,
+        ),
+
+        Positioned(
+          top: 360,
+          left: 0,
+          right: 0,
+          child: Center(
             child: Container(
-              decoration: const BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.only(
-                  topLeft: Radius.circular(24),
-                  topRight: Radius.circular(24),
-                ),
+              // width: 200,
+
+              //  height: imageHeight * 0.7,
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(16),
+                // boxShadow: [
+                //   BoxShadow(
+                //     color: Colors.black.withOpacity(0.3),
+                //     blurRadius: 20,
+                //     spreadRadius: 5,
+                //   ),
+                // ],
               ),
-              child: Column(
-                children: [
-                  // Drag handle
-                  Container(
-                    margin: const EdgeInsets.only(top: 12),
-                    width: 40,
-                    height: 4,
-                    decoration: BoxDecoration(
-                      color: Colors.grey[300],
-                      borderRadius: BorderRadius.circular(2),
-                    ),
+              child: ClipRRect(
+                borderRadius: BorderRadius.circular(16),
+                child: CachedNetworkImage(
+                  width: 110,
+                  height: 200,
+
+                  imageUrl: photo.src.medium,
+                  fit: BoxFit.cover,
+                  placeholder: (context, url) =>
+                      Container(color: Colors.grey[300]),
+                  errorWidget: (context, url, error) => Container(
+                    color: Colors.grey[300],
+                    child: const Icon(Icons.error),
                   ),
-                  // SizedBox(height: imageHeight / 2 + 20),
-                  // Options list
-                  Expanded(
-                    child: SingleChildScrollView(
-                      padding: const EdgeInsets.symmetric(horizontal: 16),
-                      child: Column(
-                        children: [
-                          _OptionTile(
-                            icon: Icons.download_outlined,
-                            title: 'Download image',
-                            subtitle: 'Save to your device',
-                            onTap: () {
-                              Navigator.pop(context);
-                              ScaffoldMessenger.of(context).showSnackBar(
-                                const SnackBar(
-                                  content: Text('Downloading...'),
-                                  duration: Duration(seconds: 2),
-                                ),
-                              );
-                            },
-                          ),
-                          const Divider(height: 1),
-                          _OptionTile(
-                            icon: Icons.bookmark_outline,
-                            title: 'Save to board',
-                            subtitle: 'Add to your collection',
-                            onTap: () {
-                              Navigator.pop(context);
-                              _showBoardSelector(context);
-                            },
-                          ),
-                          const Divider(height: 1),
-                          _OptionTile(
-                            icon: Icons.share_outlined,
-                            title: 'Share',
-                            subtitle: 'Send to friends',
-                            onTap: () {
-                              Navigator.pop(context);
-                              _showShareSheet(context);
-                            },
-                          ),
-                          const Divider(height: 1),
-                          _OptionTile(
-                            icon: Icons.link_outlined,
-                            title: 'Copy link',
-                            subtitle: 'Share via link',
-                            onTap: () {
-                              Navigator.pop(context);
-                              ScaffoldMessenger.of(context).showSnackBar(
-                                const SnackBar(
-                                  content: Text('Link copied to clipboard'),
-                                  duration: Duration(seconds: 2),
-                                ),
-                              );
-                            },
-                          ),
-                          const Divider(height: 1),
-                          _OptionTile(
-                            icon: Icons.hide_source_outlined,
-                            title: 'Hide Pin',
-                            subtitle: 'See fewer Pins like this',
-                            onTap: () {
-                              Navigator.pop(context);
-                              ScaffoldMessenger.of(context).showSnackBar(
-                                const SnackBar(
-                                  content: Text('Pin hidden'),
-                                  duration: Duration(seconds: 2),
-                                ),
-                              );
-                            },
-                          ),
-                          const Divider(height: 1),
-                          _OptionTile(
-                            icon: Icons.report_outlined,
-                            title: 'Report Pin',
-                            subtitle: 'Report inappropriate content',
-                            isDestructive: true,
-                            onTap: () {
-                              Navigator.pop(context);
-                              _showReportDialog(context);
-                            },
-                          ),
-                          const SizedBox(height: 24),
-                        ],
-                      ),
-                    ),
-                  ),
-                ],
+                ),
               ),
             ),
           ),
-        ],
-      ),
+        ),
+      ],
+    );
+  }
+
+  _bottomCardText(IconData icon, String text, [String? desc]) {
+    return Row(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Icon(icon, size: 24),
+        const SizedBox(width: 12),
+
+        Expanded(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                text,
+                style: const TextStyle(
+                  fontSize: 20,
+                  fontWeight: FontWeight.w500,
+                ),
+              ),
+              if (desc != null)
+                Padding(
+                  padding: const EdgeInsets.only(top: 3, right: 5),
+                  child: Text(
+                    desc,
+                    maxLines: 2,
+                    overflow: TextOverflow.ellipsis,
+
+                    style: const TextStyle(fontSize: 15, color: Colors.black54),
+                  ),
+                ),
+            ],
+          ),
+        ),
+      ],
     );
   }
 
