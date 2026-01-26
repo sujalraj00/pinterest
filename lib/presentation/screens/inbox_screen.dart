@@ -124,7 +124,24 @@ class InboxScreen extends StatelessWidget {
               style: TextStyle(fontWeight: FontWeight.w500, fontSize: 22),
             ),
 
-            Center(child: Text('dsdf')),
+            Center(
+              child: Column(
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.all(19.0),
+                    child: Image.asset('assets/images/bottleceleb.png'),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 28),
+                    child: Text(
+                      softWrap: true,
+                      textAlign: TextAlign.center,
+                      'Updates show your activity on your pins and boards and give you tips and tricks to explore. They will be here soon.',
+                    ),
+                  ),
+                ],
+              ),
+            ),
           ],
         ),
       ),
