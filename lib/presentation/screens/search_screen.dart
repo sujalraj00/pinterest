@@ -1,5 +1,6 @@
 // import 'package:flutter/material.dart';
 // import 'package:flutter_riverpod/flutter_riverpod.dart';
+// import 'package:go_router/go_router.dart';
 // import '../controllers/search_controller.dart';
 // import '../widgets/photo_grid.dart';
 // import '../widgets/shimmer_grid.dart';
@@ -12,29 +13,27 @@
 // }
 
 // class _SearchScreenState extends ConsumerState<SearchScreen> {
-//   final TextEditingController _searchController = TextEditingController();
-//   final ScrollController _scrollController = ScrollController();
-//   final List<String> _suggestions = [
-//     'Nature',
-//     'Travel',
-//     'Food',
-//     'Animals',
-//     'Architecture',
-//     'Fashion',
-//     'Art',
-//     'Technology',
-//   ];
+//
 
 //   @override
 //   void initState() {
 //     super.initState();
 //     _scrollController.addListener(_onScroll);
+//     _carouselController.addListener(() {
+//       int next = _carouselController.page!.round();
+//       if (_currentCarouselIndex != next) {
+//         setState(() {
+//           _currentCarouselIndex = next;
+//         });
+//       }
+//     });
 //   }
 
 //   @override
 //   void dispose() {
 //     _searchController.dispose();
 //     _scrollController.dispose();
+//     _carouselController.dispose();
 //     super.dispose();
 //   }
 
@@ -56,111 +55,95 @@
 //     final state = ref.watch(searchControllerProvider);
 
 //     return Scaffold(
-//       appBar: AppBar(
-//         title: TextField(
-//           controller: _searchController,
-//           autofocus: true,
-//           decoration: InputDecoration(
-//             hintText: 'Search for ideas',
-//             border: InputBorder.none,
-//             suffixIcon: _searchController.text.isNotEmpty
-//                 ? IconButton(
-//                     icon: const Icon(Icons.clear),
-//                     onPressed: () {
-//                       _searchController.clear();
-//                       ref.read(searchControllerProvider.notifier).clearSearch();
-//                       setState(() {});
-//                     },
-//                   )
-//                 : null,
-//           ),
-//           onSubmitted: _performSearch,
-//           onChanged: (value) => setState(() {}),
-//         ),
-//         actions: [
-//           IconButton(
-//             icon: const Icon(Icons.search),
-//             onPressed: () => _performSearch(_searchController.text),
-//           ),
-//         ],
-//       ),
-//       body: state.query.isEmpty
-//           ? _buildSuggestions()
-//           : state.isLoading && state.photos.isEmpty
-//           ? const ShimmerGrid()
-//           : state.error != null && state.photos.isEmpty
-//           ? Center(
-//               child: Column(
-//                 mainAxisAlignment: MainAxisAlignment.center,
+//       backgroundColor: Colors.white,
+//       body: SafeArea(
+//         child: Column(
+//           children: [
+//             //   Search Bar
+//             Padding(
+//               padding: const EdgeInsets.all(12),
+//               child: Row(
 //                 children: [
-//                   const Icon(Icons.error_outline, size: 64, color: Colors.grey),
-//                   const SizedBox(height: 16),
-//                   Text(
-//                     'Error searching photos',
-//                     style: Theme.of(context).textTheme.titleMedium,
+//                   Expanded(
+//                     child: TextField(
+//                       controller: _searchController,
+//                       decoration: InputDecoration(
+//                         hintText: 'Search for ideas',
+//                         hintStyle: TextStyle(color: Colors.grey[600]),
+//                         prefixIcon: const Icon(
+//                           Icons.search,
+//                           color: Colors.grey,
+//                         ),
+//                         suffixIcon: _searchController.text.isNotEmpty
+//                             ? IconButton(
+//                                 icon: const Icon(
+//                                   Icons.clear,
+//                                   color: Colors.grey,
+//                                 ),
+//                                 onPressed: () {
+//                                   _searchController.clear();
+//                                   ref
+//                                       .read(searchControllerProvider.notifier)
+//                                       .clearSearch();
+//                                   setState(() {});
+//                                 },
+//                               )
+//                             : null,
+//                         filled: true,
+//                         fillColor: Colors.grey[200],
+//                         border: OutlineInputBorder(
+//                           borderRadius: BorderRadius.circular(30),
+//                           borderSide: BorderSide.none,
+//                         ),
+//                         contentPadding: const EdgeInsets.symmetric(vertical: 0),
+//                       ),
+//                       onSubmitted: _performSearch,
+//                       onChanged: (value) => setState(() {}),
+//                     ),
+//                   ),
+//                   const SizedBox(width: 12),
+//                   Container(
+//                     decoration: BoxDecoration(
+//                       color: Colors.grey[200],
+//                       borderRadius: BorderRadius.circular(12),
+//                     ),
+//                     child: IconButton(
+//                       icon: const Icon(Icons.camera_alt_outlined),
+//                       onPressed: () {
+//                         // TODO: Implement camera search
+//                       },
+//                     ),
 //                   ),
 //                 ],
 //               ),
-//             )
-//           : state.photos.isEmpty
-//           ? Center(
-//               child: Column(
-//                 mainAxisAlignment: MainAxisAlignment.center,
-//                 children: [
-//                   const Icon(Icons.search_off, size: 64, color: Colors.grey),
-//                   const SizedBox(height: 16),
-//                   Text(
-//                     'No results found',
-//                     style: Theme.of(context).textTheme.titleMedium,
-//                   ),
-//                 ],
-//               ),
-//             )
-//           : PhotoGrid(
-//               photos: state.photos,
-//               scrollController: _scrollController,
-//               isLoadingMore: state.isLoadingMore,
 //             ),
-//     );
-//   }
-
-//   Widget _buildSuggestions() {
-//     return Padding(
-//       padding: const EdgeInsets.all(16),
-//       child: Column(
-//         crossAxisAlignment: CrossAxisAlignment.start,
-//         children: [
-//           Text(
-//             'Popular searches',
-//             style: Theme.of(
-//               context,
-//             ).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.bold),
-//           ),
-//           const SizedBox(height: 16),
-//           Wrap(
-//             spacing: 8,
-//             runSpacing: 8,
-//             children: _suggestions.map((suggestion) {
-//               return ActionChip(
-//                 label: Text(suggestion),
-//                 onPressed: () {
-//                   _searchController.text = suggestion;
-//                   _performSearch(suggestion);
-//                 },
-//               );
-//             }).toList(),
-//           ),
-//         ],
+//             // Content
+//             Expanded(
+//               child: state.query.isEmpty
+//                   ? _buildExploreContent()
+//                   : state.isLoading && state.photos.isEmpty
+//                   ? const ShimmerGrid()
+//                   : state.photos.isEmpty
+//                   ? _buildNoResults()
+//                   : PhotoGrid(
+//                       photos: state.photos,
+//                       scrollController: _scrollController,
+//                       isLoadingMore: state.isLoadingMore,
+//                     ),
+//             ),
+//           ],
+//         ),
 //       ),
 //     );
 //   }
-// }
 
+import 'dart:ui';
 import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../controllers/search_controller.dart';
+import 'package:go_router/go_router.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import '../widgets/photo_grid.dart';
-import '../widgets/shimmer_grid.dart';
 
 class SearchScreen extends ConsumerStatefulWidget {
   const SearchScreen({super.key});
@@ -172,35 +155,107 @@ class SearchScreen extends ConsumerStatefulWidget {
 class _SearchScreenState extends ConsumerState<SearchScreen> {
   final TextEditingController _searchController = TextEditingController();
   final ScrollController _scrollController = ScrollController();
-  final List<String> _suggestions = [
-    'Nature',
-    'Travel',
-    'Food',
-    'Animals',
-    'Architecture',
-    'Fashion',
-    'Art',
-    'Technology',
+  late PageController _bannerController;
+  late PageController _carouselController;
+  int _currentCarouselIndex = 0;
+  double _scrollOffset = 0;
+
+  final List<Map<String, String>> _featuredBoards = [
+    {
+      'title': 'Paper flower DIYs',
+      'subtitle': 'Start a new hobby',
+      'image':
+          'https://images.pexels.com/photos/1070850/pexels-photo-1070850.jpeg',
+    },
+    {
+      'title': 'Home office ideas',
+      'subtitle': 'Work from home in style',
+      'image':
+          'https://images.pexels.com/photos/667838/pexels-photo-667838.jpeg',
+    },
+    {
+      'title': 'Fashion inspiration',
+      'subtitle': 'Elevate your style',
+      'image':
+          'https://images.pexels.com/photos/1926769/pexels-photo-1926769.jpeg',
+    },
   ];
 
+  final List<Map<String, dynamic>> _recommendedBoards = [
+    {
+      'title': 'Retrofuturism aesthetics',
+      'category': 'Aesthetics',
+      'verified': true,
+      'pins': 64,
+      'time': '3mo',
+      'images': [
+        'https://images.pexels.com/photos/2387873/pexels-photo-2387873.jpeg',
+        'https://images.pexels.com/photos/3861969/pexels-photo-3861969.jpeg',
+      ],
+    },
+    {
+      'title': 'Kitchen countertop styling',
+      'category': 'Home Decor',
+      'verified': true,
+      'pins': 63,
+      'time': '4mo',
+      'images': [
+        'https://images.pexels.com/photos/1457842/pexels-photo-1457842.jpeg',
+        'https://images.pexels.com/photos/1599791/pexels-photo-1599791.jpeg',
+      ],
+    },
+  ];
+
+  final double _bannerHeight = 380;
+
+  final List<String> _bannerImages = [
+    'https://images.pexels.com/photos/1070850/pexels-photo-1070850.jpeg',
+    'https://images.pexels.com/photos/667838/pexels-photo-667838.jpeg',
+    'https://images.pexels.com/photos/1926769/pexels-photo-1926769.jpeg',
+  ];
+
+  final List<String> _photos = [
+    'https://images.pexels.com/photos/167832/pexels-photo-167832.jpeg',
+    'https://images.pexels.com/photos/34950/pexels-photo.jpg',
+    'https://images.pexels.com/photos/248797/pexels-photo-248797.jpeg',
+    'https://images.pexels.com/photos/212372/pexels-photo-212372.jpeg',
+    'https://images.pexels.com/photos/1252869/pexels-photo-1252869.jpeg',
+    'https://images.pexels.com/photos/707046/pexels-photo-707046.jpeg',
+  ];
   @override
   void initState() {
     super.initState();
-    _scrollController.addListener(_onScroll);
+    _bannerController = PageController();
+    _carouselController = PageController();
+
+    _scrollController.addListener(() {
+      setState(() {
+        _scrollOffset = _scrollController.offset;
+      });
+
+      if (_scrollController.position.pixels >=
+          _scrollController.position.maxScrollExtent * 0.8) {
+        ref.read(searchControllerProvider.notifier).loadMorePhotos();
+      }
+    });
+
+    _bannerController.addListener(() {
+      int next = _bannerController.page!.round();
+      if (_currentCarouselIndex != next) {
+        setState(() {
+          _currentCarouselIndex = next;
+        });
+      }
+    });
   }
 
   @override
   void dispose() {
     _searchController.dispose();
     _scrollController.dispose();
+    _carouselController.dispose();
+    _bannerController.dispose();
     super.dispose();
-  }
-
-  void _onScroll() {
-    if (_scrollController.position.pixels >=
-        _scrollController.position.maxScrollExtent * 0.8) {
-      ref.read(searchControllerProvider.notifier).loadMorePhotos();
-    }
   }
 
   void _performSearch(String query) {
@@ -209,109 +264,708 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
     }
   }
 
+  Widget _buildExploreContent() {
+    return SingleChildScrollView(
+      controller: _scrollController,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          // Featured Carousel
+          // SizedBox(
+          //   height: 380,
+          //   child: PageView.builder(
+          //     controller: _carouselController,
+          //     itemCount: _featuredBoards.length,
+          //     itemBuilder: (context, index) {
+          //       final board = _featuredBoards[index];
+          //       return Padding(
+          //         padding: const EdgeInsets.symmetric(horizontal: 12),
+          //         child: ClipRRect(
+          //           borderRadius: BorderRadius.circular(16),
+          //           child: Stack(
+          //             fit: StackFit.expand,
+          //             children: [
+          //               Image.network(board['image']!, fit: BoxFit.cover),
+          //               // Gradient overlay
+          //               Container(
+          //                 decoration: BoxDecoration(
+          //                   gradient: LinearGradient(
+          //                     begin: Alignment.topCenter,
+          //                     end: Alignment.bottomCenter,
+          //                     colors: [
+          //                       Colors.transparent,
+          //                       Colors.black.withOpacity(0.7),
+          //                     ],
+          //                   ),
+          //                 ),
+          //               ),
+          //               // Text content
+          //               Positioned(
+          //                 bottom: 24,
+          //                 left: 24,
+          //                 right: 24,
+          //                 child: Column(
+          //                   crossAxisAlignment: CrossAxisAlignment.start,
+          //                   children: [
+          //                     Text(
+          //                       board['subtitle']!,
+          //                       style: const TextStyle(
+          //                         color: Colors.white,
+          //                         fontSize: 14,
+          //                       ),
+          //                     ),
+          //                     const SizedBox(height: 4),
+          //                     Text(
+          //                       board['title']!,
+          //                       style: const TextStyle(
+          //                         color: Colors.white,
+          //                         fontSize: 32,
+          //                         fontWeight: FontWeight.bold,
+          //                       ),
+          //                     ),
+          //                   ],
+          //                 ),
+          //               ),
+          //             ],
+          //           ),
+          //         ),
+          //       );
+          //     },
+          //   ),
+          // ),
+          // const SizedBox(height: 16),
+          // Carousel indicators
+          Padding(
+            padding: const EdgeInsets.only(top: 16),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: List.generate(
+                _bannerImages.length,
+                (index) => Container(
+                  margin: const EdgeInsets.symmetric(horizontal: 4),
+                  width: 8,
+                  height: 8,
+                  decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    color: _currentCarouselIndex == index
+                        ? Colors.black
+                        : Colors.grey[400],
+                  ),
+                ),
+              ),
+            ),
+          ),
+          const SizedBox(height: 32),
+          // Explore featured boards
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 16),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                const Text(
+                  'Explore featured boards',
+                  style: TextStyle(
+                    fontSize: 14,
+                    color: Colors.grey,
+                    fontWeight: FontWeight.w500,
+                  ),
+                ),
+                const SizedBox(height: 8),
+                const Text(
+                  'Ideas you might like',
+                  style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+                ),
+              ],
+            ),
+          ),
+          const SizedBox(height: 16),
+          // Recommended boards
+          SizedBox(
+            height: 280,
+            child: ListView.builder(
+              scrollDirection: Axis.horizontal,
+              padding: const EdgeInsets.symmetric(horizontal: 12),
+              itemCount: _recommendedBoards.length,
+              itemBuilder: (context, index) {
+                final board = _recommendedBoards[index];
+                return _BoardCard(board: board);
+              },
+            ),
+          ),
+          const SizedBox(height: 32),
+          // Ideas for you
+          const Padding(
+            padding: EdgeInsets.symmetric(horizontal: 16),
+            child: Text(
+              'Ideas for you',
+              style: TextStyle(
+                fontSize: 14,
+                color: Colors.grey,
+                fontWeight: FontWeight.w500,
+              ),
+            ),
+          ),
+          const SizedBox(height: 8),
+          const Padding(
+            padding: EdgeInsets.symmetric(horizontal: 16),
+            child: Text(
+              'Photography',
+              style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+            ),
+          ),
+          const SizedBox(height: 16),
+        ],
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final state = ref.watch(searchControllerProvider);
-
     return Scaffold(
-      appBar: AppBar(
-        automaticallyImplyLeading: false,
-        title: TextField(
-          controller: _searchController,
-          decoration: InputDecoration(
-            hintText: 'Search for ideas',
-            prefixIcon: const Icon(Icons.search),
-            suffixIcon: _searchController.text.isNotEmpty
-                ? IconButton(
-                    icon: const Icon(Icons.clear),
+      backgroundColor: Colors.white,
+      body: SafeArea(
+        child: Stack(
+          children: [
+            state.query.isEmpty
+                ? _buildScrollableContent()
+                : _buildSearchResults(state),
+            _buildPinterestSearchBar(),
+          ],
+        ),
+      ),
+    );
+  }
+
+  // ================= SCROLLABLE CONTENT =================
+
+  Widget _buildScrollableContent() {
+    return Positioned.fill(
+      child: SingleChildScrollView(
+        controller: _scrollController,
+        padding: const EdgeInsets.only(top: 2),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            _buildBanner(),
+            const SizedBox(height: 24),
+            _buildExploreContent(),
+            _buildCategorySection('Middle east', [
+              'https://images.pexels.com/photos/3573351/pexels-photo-3573351.jpeg',
+              'https://images.pexels.com/photos/1103970/pexels-photo-1103970.jpeg',
+              'https://images.pexels.com/photos/3842632/pexels-photo-3842632.jpeg',
+              'https://images.pexels.com/photos/2398220/pexels-photo-2398220.jpeg',
+            ]),
+            const SizedBox(height: 32),
+            _buildCategorySection('Travel', [
+              'https://images.pexels.com/photos/1619317/pexels-photo-1619317.jpeg',
+              'https://images.pexels.com/photos/1066029/pexels-photo-1066029.jpeg',
+              'https://images.pexels.com/photos/1680140/pexels-photo-1680140.jpeg',
+              'https://images.pexels.com/photos/1619348/pexels-photo-1619348.jpeg',
+            ]),
+            const SizedBox(height: 32),
+            _buildCategorySection('Cell phones and accessories', [
+              'https://images.pexels.com/photos/699122/pexels-photo-699122.jpeg',
+              'https://images.pexels.com/photos/699122/pexels-photo-699122.jpeg',
+              'https://images.pexels.com/photos/699122/pexels-photo-699122.jpeg',
+              'https://images.pexels.com/photos/699122/pexels-photo-699122.jpeg',
+            ]),
+            const SizedBox(height: 32),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildBanner() {
+    return SizedBox(
+      height: _bannerHeight,
+      child: PageView.builder(
+        controller: _bannerController,
+        itemCount: _bannerImages.length,
+        itemBuilder: (context, index) {
+          return Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 12),
+            child: ClipRRect(
+              borderRadius: BorderRadius.circular(16),
+              child: Image.network(_bannerImages[index], fit: BoxFit.cover),
+            ),
+          );
+        },
+      ),
+    );
+  }
+
+  Widget _buildSearchResults(SearchState state) {
+    // Extract base search query (first word before any chip selection)
+    final baseQuery = state.query.split(' ').first;
+
+    return Positioned.fill(
+      child: Column(
+        children: [
+          // Add padding to account for search bar height
+          SizedBox(height: 70),
+
+          // Filter chips section
+          SingleChildScrollView(
+            scrollDirection: Axis.horizontal,
+            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 12),
+            child: Row(
+              children: [
+                _buildFilterChip('Cute', baseQuery, state.query),
+                const SizedBox(width: 8),
+                _buildFilterChip('Tattoo', baseQuery, state.query),
+                const SizedBox(width: 8),
+                _buildFilterChip('Drawing', baseQuery, state.query),
+                const SizedBox(width: 8),
+                _buildFilterChip('Bulk', baseQuery, state.query),
+              ],
+            ),
+          ),
+
+          // Search results grid
+          Expanded(
+            child: state.isLoading && state.photos.isEmpty
+                ? const Center(child: CircularProgressIndicator())
+                : state.photos.isEmpty
+                ? Center(
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Icon(
+                          Icons.search_off,
+                          size: 64,
+                          color: Colors.grey[400],
+                        ),
+                        const SizedBox(height: 16),
+                        Text(
+                          'No results found for "${state.query}"',
+                          style: const TextStyle(
+                            fontSize: 16,
+                            fontWeight: FontWeight.w500,
+                          ),
+                        ),
+                      ],
+                    ),
+                  )
+                : PhotoGrid(
+                    photos: state.photos,
+                    scrollController: _scrollController,
+                    isLoadingMore: state.isLoadingMore,
+                  ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildFilterChip(String label, String baseQuery, String fullQuery) {
+    // Extract the chip part of the query (last word)
+    final queryParts = fullQuery.trim().split(' ');
+    final selectedChip = queryParts.length > 1 ? queryParts.last : '';
+
+    // Check if this chip is currently selected
+    final isSelected = selectedChip.toLowerCase() == label.toLowerCase();
+
+    return GestureDetector(
+      onTap: () {
+        // Create the display query (for UI/search bar)
+        final displayQuery = isSelected
+            ? baseQuery // If already selected, remove it
+            : '$baseQuery $label'.trim(); // Append chip to base query
+
+        // For API search, only use the base query (first word)
+        // This ensures the API receives valid single-word searches
+        final apiQuery = baseQuery;
+
+        if (apiQuery.isNotEmpty) {
+          // Update the search bar text to show the full query for display
+          _searchController.text = displayQuery;
+
+          // Search with only the base word (first word) for API
+          // This ensures results are found
+          ref.read(searchControllerProvider.notifier).searchPhotos(apiQuery);
+
+          // Note: We could enhance this later to filter results locally by the chip
+          // For now, we search with the base word and show the chip selection in the UI
+        }
+      },
+      child: Container(
+        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+        decoration: BoxDecoration(
+          color: isSelected ? Colors.grey[800] : Colors.grey[200],
+          borderRadius: BorderRadius.circular(20),
+        ),
+        child: Text(
+          label,
+          style: TextStyle(
+            fontSize: 14,
+            fontWeight: FontWeight.w500,
+            color: isSelected ? Colors.white : Colors.black,
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildMasonryGrid() {
+    // Staggered heights for Pinterest-like appearance
+    final List<double> heights = [250, 300, 200, 280, 220, 290];
+
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 12),
+      child: MasonryGridView.count(
+        crossAxisCount: 2,
+        mainAxisSpacing: 12,
+        crossAxisSpacing: 12,
+        shrinkWrap: true,
+        physics: const NeverScrollableScrollPhysics(),
+        itemCount: _photos.length,
+        itemBuilder: (context, index) {
+          return ClipRRect(
+            borderRadius: BorderRadius.circular(16),
+            child: Container(
+              height: heights[index % heights.length],
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(16),
+              ),
+              child: Image.network(_photos[index], fit: BoxFit.cover),
+            ),
+          );
+        },
+      ),
+    );
+  }
+
+  // ================= PINTEREST SEARCH BAR =================
+
+  Widget _buildPinterestSearchBar() {
+    final state = ref.watch(searchControllerProvider);
+    final hasActiveSearch = state.query.isNotEmpty;
+
+    // Calculate progress: 0 to 1 based on banner scroll
+    final double progress = (_scrollOffset / _bannerHeight).clamp(0.0, 1.0);
+
+    // Blur effect: starts at 20% scroll, reaches max at 50% scroll
+    double blurAmount = 0.0;
+    if (progress >= 0.2) {
+      blurAmount =
+          ((progress - 0.2) / 0.3) * 20; // Scale 20% to 50% to 0-20 blur
+      blurAmount = blurAmount.clamp(0.0, 20.0);
+    }
+
+    // Background: transparent initially → white quickly on scroll
+    // When search is active, always white
+    final Color backgroundColor = hasActiveSearch
+        ? Colors.white
+        : (progress < 0.05 ? Colors.white.withOpacity(0.0) : Colors.white);
+
+    final Color borderColor = Color.lerp(
+      Colors.white.withOpacity(0.0),
+      Colors.grey.shade300,
+      progress,
+    )!;
+
+    return Positioned(
+      top: 0,
+      left: 0,
+      right: 0,
+      child: ClipRect(
+        child: BackdropFilter(
+          filter: ImageFilter.blur(sigmaX: blurAmount, sigmaY: blurAmount),
+          child: Container(
+            padding: hasActiveSearch
+                ? const EdgeInsets.fromLTRB(8, 12, 12, 12)
+                : const EdgeInsets.fromLTRB(12, 12, 12, 12),
+            decoration: BoxDecoration(
+              color: backgroundColor,
+              border: Border(bottom: BorderSide(color: borderColor)),
+            ),
+            child: Row(
+              children: [
+                // Back button - only show when search is active
+                if (hasActiveSearch)
+                  IconButton(
+                    icon: const Icon(Icons.arrow_back),
                     onPressed: () {
+                      // Clear search and go back to explore view
                       _searchController.clear();
                       ref.read(searchControllerProvider.notifier).clearSearch();
                       setState(() {});
                     },
-                  )
-                : null,
-            filled: true,
-            fillColor: Colors.grey[200],
-            border: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(24),
-              borderSide: BorderSide.none,
+                  ),
+                // Search field
+                Expanded(
+                  child: TextField(
+                    controller: _searchController,
+                    decoration: InputDecoration(
+                      hintText: 'Search for ideas',
+                      prefixIcon: hasActiveSearch
+                          ? null
+                          : const Icon(Icons.search),
+                      filled: true,
+                      fillColor: Colors.grey[200]!.withOpacity(
+                        progress > 0.1 ? 1 : 0.6,
+                      ),
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(30),
+                        borderSide: BorderSide.none,
+                      ),
+                      contentPadding: const EdgeInsets.symmetric(vertical: 0),
+                      suffixIcon: hasActiveSearch
+                          ? IconButton(
+                              icon: const Icon(Icons.close),
+                              onPressed: () {
+                                _searchController.clear();
+                                ref
+                                    .read(searchControllerProvider.notifier)
+                                    .clearSearch();
+                                setState(() {});
+                              },
+                            )
+                          : null,
+                    ),
+                    onSubmitted: (query) {
+                      if (query.isNotEmpty) {
+                        ref
+                            .read(searchControllerProvider.notifier)
+                            .searchPhotos(query);
+                      }
+                    },
+                    onChanged: (value) {
+                      setState(() {});
+                    },
+                  ),
+                ),
+                // Camera button - only show when not searching
+                if (!hasActiveSearch)
+                  Padding(
+                    padding: const EdgeInsets.only(left: 12),
+                    child: Container(
+                      decoration: BoxDecoration(
+                        color: Colors.grey[200]!.withOpacity(
+                          progress > 0.1 ? 1 : 0.6,
+                        ),
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                      child: IconButton(
+                        icon: const Icon(Icons.camera_alt_outlined),
+                        onPressed: () {},
+                      ),
+                    ),
+                  ),
+              ],
             ),
-            contentPadding: const EdgeInsets.symmetric(vertical: 0),
           ),
-          onSubmitted: _performSearch,
-          onChanged: (value) => setState(() {}),
         ),
       ),
-      body: state.query.isEmpty
-          ? _buildSuggestions()
-          : state.isLoading && state.photos.isEmpty
-          ? const ShimmerGrid()
-          : state.error != null && state.photos.isEmpty
-          ? Center(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  const Icon(Icons.error_outline, size: 64, color: Colors.grey),
-                  const SizedBox(height: 16),
-                  Text(
-                    'Error searching photos',
-                    style: Theme.of(context).textTheme.titleMedium,
-                  ),
-                ],
-              ),
-            )
-          : state.photos.isEmpty
-          ? Center(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  const Icon(Icons.search_off, size: 64, color: Colors.grey),
-                  const SizedBox(height: 16),
-                  Text(
-                    'No results found',
-                    style: Theme.of(context).textTheme.titleMedium,
-                  ),
-                ],
-              ),
-            )
-          : PhotoGrid(
-              photos: state.photos,
-              scrollController: _scrollController,
-              isLoadingMore: state.isLoadingMore,
-            ),
     );
   }
 
-  Widget _buildSuggestions() {
-    return SingleChildScrollView(
-      padding: const EdgeInsets.all(16),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(
-            'Popular searches',
-            style: Theme.of(
-              context,
-            ).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.bold),
+  // ================= HELPERS =================
+
+  Widget _buildCategorySection(String categoryTitle, List<String> imageUrls) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        // Header with title and search icon
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 16),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  const Text(
+                    'Ideas for you',
+                    style: TextStyle(
+                      fontSize: 14,
+                      color: Colors.grey,
+                      fontWeight: FontWeight.w500,
+                    ),
+                  ),
+                  const SizedBox(height: 4),
+                  Text(
+                    categoryTitle,
+                    style: const TextStyle(
+                      fontSize: 24,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                ],
+              ),
+              Container(
+                decoration: BoxDecoration(
+                  color: Colors.grey[200],
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                child: IconButton(
+                  icon: const Icon(Icons.search, color: Colors.grey),
+                  onPressed: () {},
+                ),
+              ),
+            ],
           ),
-          const SizedBox(height: 16),
-          Wrap(
-            spacing: 8,
-            runSpacing: 8,
-            children: _suggestions.map((suggestion) {
-              return ActionChip(
-                label: Text(suggestion),
-                onPressed: () {
-                  _searchController.text = suggestion;
-                  _performSearch(suggestion);
-                },
-                backgroundColor: Colors.grey[200],
-                side: BorderSide.none,
-              );
-            }).toList(),
+        ),
+        const SizedBox(height: 16),
+        // 2x2 Grid of images
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 12),
+          child: GridView.count(
+            crossAxisCount: 2,
+            mainAxisSpacing: 12,
+            crossAxisSpacing: 12,
+            shrinkWrap: true,
+            physics: const NeverScrollableScrollPhysics(),
+            childAspectRatio: 1.0,
+            children: List.generate(
+              imageUrls.length > 4 ? 4 : imageUrls.length,
+              (index) {
+                return ClipRRect(
+                  borderRadius: BorderRadius.circular(16),
+                  child: Image.network(imageUrls[index], fit: BoxFit.cover),
+                );
+              },
+            ),
           ),
-        ],
+        ),
+      ],
+    );
+  }
+
+  Widget _sectionTitle(String text) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 16),
+      child: Text(
+        text,
+        style: const TextStyle(fontSize: 14, color: Colors.grey),
+      ),
+    );
+  }
+
+  Widget _sectionBigTitle(String text) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 16),
+      child: Text(
+        text,
+        style: const TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+      ),
+    );
+  }
+}
+
+//   Widget _buildNoResults() {
+//     return Center(
+//       child: Column(
+//         mainAxisAlignment: MainAxisAlignment.center,
+//         children: [
+//           Icon(Icons.search_off, size: 64, color: Colors.grey[400]),
+//           const SizedBox(height: 16),
+//           const Text(
+//             'No results found',
+//             style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+//           ),
+//         ],
+//       ),
+//     );
+//   }
+// }
+
+class _BoardCard extends StatelessWidget {
+  final Map<String, dynamic> board;
+
+  const _BoardCard({required this.board});
+
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      onTap: () {
+        context.go('/board-detail', extra: board);
+      },
+      child: Container(
+        width: 240,
+        margin: const EdgeInsets.only(right: 12),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            // Board preview images
+            SizedBox(
+              height: 180,
+              child: Row(
+                children: [
+                  Expanded(
+                    flex: 2,
+                    child: ClipRRect(
+                      borderRadius: const BorderRadius.only(
+                        topLeft: Radius.circular(12),
+                        bottomLeft: Radius.circular(12),
+                      ),
+                      child: Image.network(
+                        board['images'][0],
+                        fit: BoxFit.cover,
+                        height: double.infinity,
+                      ),
+                    ),
+                  ),
+                  const SizedBox(width: 2),
+                  Expanded(
+                    child: ClipRRect(
+                      borderRadius: const BorderRadius.only(
+                        topRight: Radius.circular(12),
+                        bottomRight: Radius.circular(12),
+                      ),
+                      child: Image.network(
+                        board['images'][1],
+                        fit: BoxFit.cover,
+                        height: double.infinity,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            const SizedBox(height: 12),
+            // Board title
+            Text(
+              board['title'],
+              style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
+              maxLines: 2,
+              overflow: TextOverflow.ellipsis,
+            ),
+            const SizedBox(height: 4),
+
+            Row(
+              children: [
+                Text(
+                  board['category'],
+                  style: TextStyle(fontSize: 14, color: Colors.grey[700]),
+                ),
+                if (board['verified']) ...[
+                  const SizedBox(width: 4),
+                  Container(
+                    padding: const EdgeInsets.all(2),
+                    decoration: const BoxDecoration(
+                      color: Color(0xFFE60023),
+                      shape: BoxShape.circle,
+                    ),
+                    child: const Icon(
+                      Icons.check,
+                      size: 12,
+                      color: Colors.white,
+                    ),
+                  ),
+                ],
+              ],
+            ),
+            const SizedBox(height: 4),
+            // Pins count and time
+            Text(
+              '${board['pins']} Pins · ${board['time']}',
+              style: TextStyle(fontSize: 12, color: Colors.grey[600]),
+            ),
+          ],
+        ),
       ),
     );
   }

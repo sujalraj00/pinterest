@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import 'package:pinterest/presentation/screens/inbox_screen.dart';
 import 'package:pinterest/presentation/screens/profile_screen.dart';
 import '../controllers/auth_controller.dart';
 
@@ -20,7 +19,7 @@ class AccountSettingsScreen extends ConsumerWidget {
         elevation: 0,
         leading: IconButton(
           icon: const Icon(Icons.arrow_back, color: Colors.black),
-          onPressed: () => Navigator.of(context).pop(),
+          onPressed: () => context.go('/saved'),
         ),
         title: const Text(
           'Your account',
@@ -65,21 +64,51 @@ class AccountSettingsScreen extends ConsumerWidget {
               //   // Navigate to profile view
               Navigator.of(context).push(
                 PageRouteBuilder(
+                  opaque: false,
                   pageBuilder: (context, animation, secondaryAnimation) =>
                       const ProfileScreen(),
                   transitionsBuilder:
                       (context, animation, secondaryAnimation, child) {
+                        // New page comes from right to left
                         const begin = Offset(1.0, 0.0);
                         const end = Offset.zero;
                         const curve = Curves.easeInOut;
+
+                        // Animation for new page (coming from right)
                         var tween = Tween(
                           begin: begin,
                           end: end,
                         ).chain(CurveTween(curve: curve));
                         var offsetAnimation = animation.drive(tween);
-                        return SlideTransition(
-                          position: offsetAnimation,
-                          child: child,
+
+                        // Animation for current page (moving left)
+                        const secondaryBegin = Offset.zero;
+                        const secondaryEnd = Offset(-0.3, 0.0);
+                        var secondaryTween = Tween(
+                          begin: secondaryBegin,
+                          end: secondaryEnd,
+                        ).chain(CurveTween(curve: curve));
+                        var secondaryOffsetAnimation = secondaryAnimation.drive(
+                          secondaryTween,
+                        );
+
+                        // Get the previous route widget
+                        return Stack(
+                          children: [
+                            // Current page sliding left
+                            SlideTransition(
+                              position: secondaryOffsetAnimation,
+                              child: Scaffold(
+                                backgroundColor: Colors.white,
+                                body: Container(color: Colors.white),
+                              ),
+                            ),
+                            // New page sliding in from right
+                            SlideTransition(
+                              position: offsetAnimation,
+                              child: child,
+                            ),
+                          ],
                         );
                       },
                   transitionDuration: const Duration(milliseconds: 300),
@@ -203,18 +232,47 @@ class AccountSettingsScreen extends ConsumerWidget {
   void _navigateToScreen(BuildContext context, String title) {
     Navigator.of(context).push(
       PageRouteBuilder(
+        opaque: false,
         pageBuilder: (context, animation, secondaryAnimation) =>
             _PlaceholderScreen(title: title),
         transitionsBuilder: (context, animation, secondaryAnimation, child) {
           const begin = Offset(1.0, 0.0);
           const end = Offset.zero;
           const curve = Curves.easeInOut;
+
+          // Animation for new page (coming from right)
           var tween = Tween(
             begin: begin,
             end: end,
           ).chain(CurveTween(curve: curve));
           var offsetAnimation = animation.drive(tween);
-          return SlideTransition(position: offsetAnimation, child: child);
+
+          // Animation for current page (moving left)
+          const secondaryBegin = Offset.zero;
+          const secondaryEnd = Offset(-0.3, 0.0);
+          var secondaryTween = Tween(
+            begin: secondaryBegin,
+            end: secondaryEnd,
+          ).chain(CurveTween(curve: curve));
+          var secondaryOffsetAnimation = secondaryAnimation.drive(
+            secondaryTween,
+          );
+
+          // Get the previous route widget
+          return Stack(
+            children: [
+              // Current page sliding left
+              SlideTransition(
+                position: secondaryOffsetAnimation,
+                child: Scaffold(
+                  backgroundColor: Colors.white,
+                  body: Container(color: Colors.white),
+                ),
+              ),
+              // New page sliding in from right
+              SlideTransition(position: offsetAnimation, child: child),
+            ],
+          );
         },
         transitionDuration: const Duration(milliseconds: 300),
       ),
@@ -293,7 +351,7 @@ class _PlaceholderScreen extends StatelessWidget {
         elevation: 0,
         leading: IconButton(
           icon: const Icon(Icons.arrow_back, color: Colors.black),
-          onPressed: () => Navigator.of(context).pop(),
+          onPressed: () => context.go('/account-settings'),
         ),
         title: Text(
           title,
