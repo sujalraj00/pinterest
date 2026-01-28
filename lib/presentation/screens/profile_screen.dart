@@ -508,7 +508,7 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen>
                     const SizedBox(height: 20),
                     // Edit Profile Button
                     Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 140),
+                      padding: const EdgeInsets.symmetric(horizontal: 120),
                       child: ElevatedButton(
                         onPressed: () {},
                         style: ElevatedButton.styleFrom(

@@ -1,142 +1,3 @@
-// import 'package:flutter/material.dart';
-// import 'package:flutter_riverpod/flutter_riverpod.dart';
-// import 'package:go_router/go_router.dart';
-// import '../controllers/search_controller.dart';
-// import '../widgets/photo_grid.dart';
-// import '../widgets/shimmer_grid.dart';
-
-// class SearchScreen extends ConsumerStatefulWidget {
-//   const SearchScreen({super.key});
-
-//   @override
-//   ConsumerState<SearchScreen> createState() => _SearchScreenState();
-// }
-
-// class _SearchScreenState extends ConsumerState<SearchScreen> {
-//
-
-//   @override
-//   void initState() {
-//     super.initState();
-//     _scrollController.addListener(_onScroll);
-//     _carouselController.addListener(() {
-//       int next = _carouselController.page!.round();
-//       if (_currentCarouselIndex != next) {
-//         setState(() {
-//           _currentCarouselIndex = next;
-//         });
-//       }
-//     });
-//   }
-
-//   @override
-//   void dispose() {
-//     _searchController.dispose();
-//     _scrollController.dispose();
-//     _carouselController.dispose();
-//     super.dispose();
-//   }
-
-//   void _onScroll() {
-//     if (_scrollController.position.pixels >=
-//         _scrollController.position.maxScrollExtent * 0.8) {
-//       ref.read(searchControllerProvider.notifier).loadMorePhotos();
-//     }
-//   }
-
-//   void _performSearch(String query) {
-//     if (query.isNotEmpty) {
-//       ref.read(searchControllerProvider.notifier).searchPhotos(query);
-//     }
-//   }
-
-//   @override
-//   Widget build(BuildContext context) {
-//     final state = ref.watch(searchControllerProvider);
-
-//     return Scaffold(
-//       backgroundColor: Colors.white,
-//       body: SafeArea(
-//         child: Column(
-//           children: [
-//             //   Search Bar
-//             Padding(
-//               padding: const EdgeInsets.all(12),
-//               child: Row(
-//                 children: [
-//                   Expanded(
-//                     child: TextField(
-//                       controller: _searchController,
-//                       decoration: InputDecoration(
-//                         hintText: 'Search for ideas',
-//                         hintStyle: TextStyle(color: Colors.grey[600]),
-//                         prefixIcon: const Icon(
-//                           Icons.search,
-//                           color: Colors.grey,
-//                         ),
-//                         suffixIcon: _searchController.text.isNotEmpty
-//                             ? IconButton(
-//                                 icon: const Icon(
-//                                   Icons.clear,
-//                                   color: Colors.grey,
-//                                 ),
-//                                 onPressed: () {
-//                                   _searchController.clear();
-//                                   ref
-//                                       .read(searchControllerProvider.notifier)
-//                                       .clearSearch();
-//                                   setState(() {});
-//                                 },
-//                               )
-//                             : null,
-//                         filled: true,
-//                         fillColor: Colors.grey[200],
-//                         border: OutlineInputBorder(
-//                           borderRadius: BorderRadius.circular(30),
-//                           borderSide: BorderSide.none,
-//                         ),
-//                         contentPadding: const EdgeInsets.symmetric(vertical: 0),
-//                       ),
-//                       onSubmitted: _performSearch,
-//                       onChanged: (value) => setState(() {}),
-//                     ),
-//                   ),
-//                   const SizedBox(width: 12),
-//                   Container(
-//                     decoration: BoxDecoration(
-//                       color: Colors.grey[200],
-//                       borderRadius: BorderRadius.circular(12),
-//                     ),
-//                     child: IconButton(
-//                       icon: const Icon(Icons.camera_alt_outlined),
-//                       onPressed: () {
-//                         // TODO: Implement camera search
-//                       },
-//                     ),
-//                   ),
-//                 ],
-//               ),
-//             ),
-//             // Content
-//             Expanded(
-//               child: state.query.isEmpty
-//                   ? _buildExploreContent()
-//                   : state.isLoading && state.photos.isEmpty
-//                   ? const ShimmerGrid()
-//                   : state.photos.isEmpty
-//                   ? _buildNoResults()
-//                   : PhotoGrid(
-//                       photos: state.photos,
-//                       scrollController: _scrollController,
-//                       isLoadingMore: state.isLoadingMore,
-//                     ),
-//             ),
-//           ],
-//         ),
-//       ),
-//     );
-//   }
-
 import 'dart:ui';
 import 'package:flutter/material.dart';
 import '../controllers/search_controller.dart';
@@ -270,71 +131,6 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          // Featured Carousel
-          // SizedBox(
-          //   height: 380,
-          //   child: PageView.builder(
-          //     controller: _carouselController,
-          //     itemCount: _featuredBoards.length,
-          //     itemBuilder: (context, index) {
-          //       final board = _featuredBoards[index];
-          //       return Padding(
-          //         padding: const EdgeInsets.symmetric(horizontal: 12),
-          //         child: ClipRRect(
-          //           borderRadius: BorderRadius.circular(16),
-          //           child: Stack(
-          //             fit: StackFit.expand,
-          //             children: [
-          //               Image.network(board['image']!, fit: BoxFit.cover),
-          //               // Gradient overlay
-          //               Container(
-          //                 decoration: BoxDecoration(
-          //                   gradient: LinearGradient(
-          //                     begin: Alignment.topCenter,
-          //                     end: Alignment.bottomCenter,
-          //                     colors: [
-          //                       Colors.transparent,
-          //                       Colors.black.withOpacity(0.7),
-          //                     ],
-          //                   ),
-          //                 ),
-          //               ),
-          //               // Text content
-          //               Positioned(
-          //                 bottom: 24,
-          //                 left: 24,
-          //                 right: 24,
-          //                 child: Column(
-          //                   crossAxisAlignment: CrossAxisAlignment.start,
-          //                   children: [
-          //                     Text(
-          //                       board['subtitle']!,
-          //                       style: const TextStyle(
-          //                         color: Colors.white,
-          //                         fontSize: 14,
-          //                       ),
-          //                     ),
-          //                     const SizedBox(height: 4),
-          //                     Text(
-          //                       board['title']!,
-          //                       style: const TextStyle(
-          //                         color: Colors.white,
-          //                         fontSize: 32,
-          //                         fontWeight: FontWeight.bold,
-          //                       ),
-          //                     ),
-          //                   ],
-          //                 ),
-          //               ),
-          //             ],
-          //           ),
-          //         ),
-          //       );
-          //     },
-          //   ),
-          // ),
-          // const SizedBox(height: 16),
-          // Carousel indicators
           Padding(
             padding: const EdgeInsets.only(top: 16),
             child: Row(
@@ -437,7 +233,6 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
     );
   }
 
-
   Widget _buildScrollableContent() {
     return Positioned.fill(
       child: SingleChildScrollView(
@@ -496,15 +291,12 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
   }
 
   Widget _buildSearchResults(SearchState state) {
-
     final baseQuery = state.query.split(' ').first;
 
     return Positioned.fill(
       child: Column(
         children: [
-
           SizedBox(height: 70),
-
 
           SingleChildScrollView(
             scrollDirection: Axis.horizontal,
@@ -521,7 +313,6 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
               ],
             ),
           ),
-
 
           Expanded(
             child: state.isLoading && state.photos.isEmpty
@@ -559,34 +350,23 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
   }
 
   Widget _buildFilterChip(String label, String baseQuery, String fullQuery) {
-    // Extract the chip part of the query (last word)
     final queryParts = fullQuery.trim().split(' ');
     final selectedChip = queryParts.length > 1 ? queryParts.last : '';
 
-    // Check if this chip is currently selected
     final isSelected = selectedChip.toLowerCase() == label.toLowerCase();
 
     return GestureDetector(
       onTap: () {
-        // Create the display query (for UI/search bar)
         final displayQuery = isSelected
-            ? baseQuery // If already selected, remove it
-            : '$baseQuery $label'.trim(); // Append chip to base query
+            ? baseQuery
+            : '$baseQuery $label'.trim();
 
-        // For API search, only use the base query (first word)
-        // This ensures the API receives valid single-word searches
         final apiQuery = baseQuery;
 
         if (apiQuery.isNotEmpty) {
-          // Update the search bar text to show the full query for display
           _searchController.text = displayQuery;
 
-          // Search with only the base word (first word) for API
-          // This ensures results are found
           ref.read(searchControllerProvider.notifier).searchPhotos(apiQuery);
-
-          // Note: We could enhance this later to filter results locally by the chip
-          // For now, we search with the base word and show the chip selection in the UI
         }
       },
       child: Container(
@@ -636,25 +416,18 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
     );
   }
 
-
-
   Widget _buildPinterestSearchBar() {
     final state = ref.watch(searchControllerProvider);
     final hasActiveSearch = state.query.isNotEmpty;
 
-    // Calculate progress: 0 to 1 based on banner scroll
     final double progress = (_scrollOffset / _bannerHeight).clamp(0.0, 1.0);
 
-    // Blur effect: starts at 20% scroll, reaches max at 50% scroll
     double blurAmount = 0.0;
     if (progress >= 0.2) {
-      blurAmount =
-          ((progress - 0.2) / 0.3) * 20; // Scale 20% to 50% to 0-20 blur
+      blurAmount = ((progress - 0.2) / 0.3) * 20;
       blurAmount = blurAmount.clamp(0.0, 20.0);
     }
 
-    // Background: transparent initially → white quickly on scroll
-    // When search is active, always white
     final Color backgroundColor = hasActiveSearch
         ? Colors.white
         : (progress < 0.05 ? Colors.white.withOpacity(0.0) : Colors.white);
@@ -761,7 +534,6 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
     );
   }
 
-
   Widget _buildCategorySection(String categoryTitle, List<String> imageUrls) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -787,7 +559,7 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
                   Text(
                     categoryTitle,
                     style: const TextStyle(
-                      fontSize: 24,
+                      fontSize: 20,
                       fontWeight: FontWeight.bold,
                     ),
                   ),
@@ -852,23 +624,6 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
     );
   }
 }
-
-//   Widget _buildNoResults() {
-//     return Center(
-//       child: Column(
-//         mainAxisAlignment: MainAxisAlignment.center,
-//         children: [
-//           Icon(Icons.search_off, size: 64, color: Colors.grey[400]),
-//           const SizedBox(height: 16),
-//           const Text(
-//             'No results found',
-//             style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-//           ),
-//         ],
-//       ),
-//     );
-//   }
-// }
 
 class _BoardCard extends StatelessWidget {
   final Map<String, dynamic> board;

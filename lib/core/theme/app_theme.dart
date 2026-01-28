@@ -6,7 +6,7 @@ class AppTheme {
     brightness: Brightness.light,
     fontFamily: 'HelveticaNeue',
     colorScheme: ColorScheme.fromSeed(
-      seedColor: const Color(0xFFE60023),
+      seedColor: Colors.white,
       brightness: Brightness.light,
     ),
     scaffoldBackgroundColor: Colors.white,
@@ -29,7 +29,7 @@ class AppTheme {
     brightness: Brightness.dark,
     fontFamily: 'HelveticaNeue',
     colorScheme: ColorScheme.fromSeed(
-      seedColor: const Color(0xFFE60023),
+      seedColor: const Color(0xFFffffff),
       brightness: Brightness.dark,
     ),
     scaffoldBackgroundColor: const Color(0xFF121212),

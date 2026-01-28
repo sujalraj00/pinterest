@@ -51,7 +51,7 @@ class SavedScreen extends ConsumerWidget {
                   dividerColor: Colors.transparent,
                   indicatorWeight: 3,
                   labelStyle: TextStyle(
-                    fontSize: 16,
+                    fontSize: 15,
                     fontWeight: FontWeight.w600,
                   ),
                   tabs: [
