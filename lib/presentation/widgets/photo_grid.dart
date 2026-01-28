@@ -152,19 +152,6 @@ class PhotoGrid extends StatelessWidget {
     return CustomScrollView(
       controller: scrollController,
       slivers: [
-        // SliverAppBar(
-        //   pinned: true,
-        //   // title: Text('sdfghj'),
-        //   leadingWidth: 100,
-        //   leading: Text(
-        //     'For you',
-        //     style: TextStyle(
-        //       fontWeight: FontWeight.w500,
-        //       fontSize: 18,
-        //       decoration: TextDecoration.underline,
-        //     ),
-        //   ),
-        // ),
         SliverPadding(
           padding: const EdgeInsets.symmetric(horizontal: 3),
           sliver: SliverMasonryGrid.count(
@@ -235,74 +222,6 @@ class PhotoCard extends StatelessWidget {
                     ),
                   ),
                 ),
-                // Positioned(
-                //   bottom: 8,
-                //   left: 8,
-                //   right: 8,
-                //   child: Row(
-                //     mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                //     children: [
-                //       // Save button
-                //       Container(
-                //         decoration: BoxDecoration(
-                //           color: const Color(0xFFE60023),
-                //           borderRadius: BorderRadius.circular(20),
-                //         ),
-                //         child: Material(
-                //           color: Colors.transparent,
-                //           child: InkWell(
-                //             onTap: () {
-                //               // TODO: Implement save functionality
-                //               ScaffoldMessenger.of(context).showSnackBar(
-                //                 const SnackBar(
-                //                   content: Text('Saved to board'),
-                //                   duration: Duration(seconds: 1),
-                //                 ),
-                //               );
-                //             },
-                //             borderRadius: BorderRadius.circular(20),
-                //             child: const Padding(
-                //               padding: EdgeInsets.symmetric(
-                //                 horizontal: 16,
-                //                 vertical: 8,
-                //               ),
-                //               child: Text(
-                //                 'Save',
-                //                 style: TextStyle(
-                //                   color: Colors.white,
-                //                   fontWeight: FontWeight.w600,
-                //                   fontSize: 14,
-                //                 ),
-                //               ),
-                //             ),
-                //           ),
-                //         ),
-                //       ),
-                //       // Three dots menu
-                //       Container(
-                //         decoration: BoxDecoration(
-                //           color: Colors.white,
-                //           borderRadius: BorderRadius.circular(20),
-                //         ),
-                //         child: Material(
-                //           color: Colors.transparent,
-                //           child: InkWell(
-                //             onTap: () => _showPinOptions(context),
-                //             borderRadius: BorderRadius.circular(20),
-                //             child: const Padding(
-                //               padding: EdgeInsets.all(8),
-                //               child: Icon(
-                //                 Icons.more_horiz,
-                //                 size: 20,
-                //                 color: Colors.black87,
-                //               ),
-                //             ),
-                //           ),
-                //         ),
-                //       ),
-                //     ],
-                //   ),
-                // ),
               ],
             ),
           ),
@@ -310,18 +229,6 @@ class PhotoCard extends StatelessWidget {
           Row(
             mainAxisAlignment: MainAxisAlignment.end,
             children: [
-              // Padding(
-              //   padding: const EdgeInsets.symmetric(horizontal: 4),
-              //   child: Text(
-              //     photo.photographer,
-              //     style: const TextStyle(
-              //       fontSize: 12,
-              //       fontWeight: FontWeight.w500,
-              //     ),
-              //     maxLines: 1,
-              //     overflow: TextOverflow.ellipsis,
-              //   ),
-              // ),
               Container(
                 decoration: BoxDecoration(
                   color: Colors.white,

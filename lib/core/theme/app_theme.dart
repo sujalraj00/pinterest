@@ -4,6 +4,7 @@ class AppTheme {
   static ThemeData lightTheme = ThemeData(
     useMaterial3: true,
     brightness: Brightness.light,
+    fontFamily: 'HelveticaNeue',
     colorScheme: ColorScheme.fromSeed(
       seedColor: const Color(0xFFE60023),
       brightness: Brightness.light,
@@ -26,6 +27,7 @@ class AppTheme {
   static ThemeData darkTheme = ThemeData(
     useMaterial3: true,
     brightness: Brightness.dark,
+    fontFamily: 'HelveticaNeue',
     colorScheme: ColorScheme.fromSeed(
       seedColor: const Color(0xFFE60023),
       brightness: Brightness.dark,

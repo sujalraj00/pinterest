@@ -20,6 +20,9 @@ import '../../presentation/controllers/auth_controller.dart';
 import '../../presentation/screens/home_screen.dart';
 import '../../presentation/screens/search_screen.dart';
 import '../../presentation/screens/create_screen.dart';
+import '../../presentation/screens/create_pin_screen.dart';
+import '../../presentation/screens/create_board_screen.dart';
+import '../../presentation/screens/create_collage_screen.dart';
 import '../../presentation/screens/inbox_screen.dart';
 import '../../presentation/screens/saved_screen.dart';
 
@@ -179,6 +182,24 @@ final appRouterProvider = Provider<GoRouter>((ref) {
               final board = state.extra as Map<String, dynamic>;
               return SlideFromRightPage(child: BoardDetailScreen(board: board));
             },
+          ),
+          GoRoute(
+            path: '/create-pin',
+            name: 'create-pin',
+            pageBuilder: (context, state) =>
+                SlideFromRightPage(child: const CreatePinScreen()),
+          ),
+          GoRoute(
+            path: '/create-board',
+            name: 'create-board',
+            pageBuilder: (context, state) =>
+                SlideFromRightPage(child: const CreateBoardScreen()),
+          ),
+          GoRoute(
+            path: '/create-collage',
+            name: 'create-collage',
+            pageBuilder: (context, state) =>
+                SlideFromRightPage(child: const CreateCollageScreen()),
           ),
         ],
       ),

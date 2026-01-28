@@ -356,7 +356,7 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
             ),
           ),
           const SizedBox(height: 32),
-          // Explore featured boards
+
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 16),
             child: Column(
@@ -379,7 +379,7 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
             ),
           ),
           const SizedBox(height: 16),
-          // Recommended boards
+
           SizedBox(
             height: 280,
             child: ListView.builder(
@@ -393,7 +393,7 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
             ),
           ),
           const SizedBox(height: 32),
-          // Ideas for you
+
           const Padding(
             padding: EdgeInsets.symmetric(horizontal: 16),
             child: Text(
@@ -437,7 +437,6 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
     );
   }
 
-  // ================= SCROLLABLE CONTENT =================
 
   Widget _buildScrollableContent() {
     return Positioned.fill(
@@ -497,16 +496,16 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
   }
 
   Widget _buildSearchResults(SearchState state) {
-    // Extract base search query (first word before any chip selection)
+
     final baseQuery = state.query.split(' ').first;
 
     return Positioned.fill(
       child: Column(
         children: [
-          // Add padding to account for search bar height
+
           SizedBox(height: 70),
 
-          // Filter chips section
+
           SingleChildScrollView(
             scrollDirection: Axis.horizontal,
             padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 12),
@@ -523,7 +522,7 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
             ),
           ),
 
-          // Search results grid
+
           Expanded(
             child: state.isLoading && state.photos.isEmpty
                 ? const Center(child: CircularProgressIndicator())
@@ -637,7 +636,7 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
     );
   }
 
-  // ================= PINTEREST SEARCH BAR =================
+
 
   Widget _buildPinterestSearchBar() {
     final state = ref.watch(searchControllerProvider);
@@ -762,7 +761,6 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
     );
   }
 
-  // ================= HELPERS =================
 
   Widget _buildCategorySection(String categoryTitle, List<String> imageUrls) {
     return Column(
